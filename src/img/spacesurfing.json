@@ -1,0 +1,39 @@
+{"frames": {
+
+"asteroid1.png":
+{
+	"frame": {"x":0,"y":0,"w":487,"h":572},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":487,"h":572},
+	"sourceSize": {"w":487,"h":572}
+},
+"asteroid2.png":
+{
+	"frame": {"x":487,"y":0,"w":752,"h":621},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":752,"h":621},
+	"sourceSize": {"w":752,"h":621}
+},
+"spaceship.png":
+{
+	"frame": {"x":1239,"y":0,"w":388,"h":424},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":388,"h":424},
+	"sourceSize": {"w":388,"h":424}
+}},
+"animations": {
+	"asteroid": ["asteroid1.png","asteroid2.png"]
+},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "spacesurfing.png",
+	"format": "RGBA8888",
+	"size": {"w":1627,"h":621},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:bc5d693cc4fdd842b83979223be34764:43742fa4cf69c1fb314369da9f51d25a:1ba0fe8d3b3f31b0250b4c03b9fdfe55$"
+}
+}

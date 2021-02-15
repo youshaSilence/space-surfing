@@ -1,0 +1,18 @@
+#game {
+  width: 900px;
+  height: 700px;
+}
+
+#header {
+  display: inline-block;
+}
+
+p {
+  display: inline-block;
+}
+
+#star {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+}
