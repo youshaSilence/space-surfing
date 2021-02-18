@@ -61,7 +61,7 @@ function createSceneAsteroid({
 }) {
   // TODO Сделать нормальную форму астероида, а не примерную
   const asteroidBody = Bodies.circle(
-    initialPosition.x, initialPosition.y, width / 2, { restitution: 0.1 },
+    initialPosition.x, initialPosition.y, width / 2, { restitution: 0.8 },
   );
 
   World.addBody(engine.world, asteroidBody);
