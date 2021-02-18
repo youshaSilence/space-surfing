@@ -1,12 +1,32 @@
 import * as PIXI from 'pixi.js';
+import * as Matter from 'matter-js';
 import '../css/style.css';
 import Spaceship from './spaceship';
 import Asteroid from './asteroid';
 
+const {
+  Body, Engine, Render, World, Bodies,
+} = Matter;
+
+const sceneContainer = document.querySelector('#game');
+const canvasWidth = sceneContainer.offsetWidth;
+const canvasHeight = sceneContainer.offsetHeight;
+
+const sceneObjects = [];
+
+const engine = Engine.create();
+engine.world.gravity.x = 0;
+engine.world.gravity.y = 0;
+
 let spaceship;
 
 function play(delta) {
-  spaceship.update(delta);
+  sceneObjects.forEach((object) => {
+    object.sprite.update(delta, {
+      bodyPosition: object.body.position,
+      bodyAngle: object.body.angle,
+    });
+  });
 }
 
 let app;
@@ -16,66 +36,100 @@ function gameLoop(delta) {
   state(delta);
 }
 
-function setup() {
-  const id = app.loader.resources['img/spacesurfing.json'].textures;
-
-  const element = document.querySelector('#game');
-
+function createSceneSpaceship({ initialPosition, width, height, texture }) {
+  // TODO Сделать нормальную форму корабля, а не примерную
   spaceship = new Spaceship({
-    texture: id['spaceship.png'],
-    x: element.offsetWidth / 2,
-    y: element.offsetHeight / 2,
-    width: 70,
-    height: 70,
+    texture,
+    x: initialPosition.x,
+    y: initialPosition.y,
+    width,
+    height,
   });
+
+  World.addBody(engine.world, spaceship.body);
 
   app.stage.addChild(spaceship);
 
-  const asteroid1 = new Asteroid({
+  sceneObjects.push({ // TODO
+    body: spaceship.body,
+    sprite: spaceship,
+  });
+}
+
+function createSceneAsteroid({
+  initialPosition, width, height, texture,
+}) {
+  // TODO Сделать нормальную форму астероида, а не примерную
+  const asteroidBody = Bodies.circle(
+    initialPosition.x, initialPosition.y, width / 2, { restitution: 0.8 },
+  );
+
+  World.addBody(engine.world, asteroidBody);
+
+  const asteroid = new Asteroid({
+    texture,
+    x: initialPosition.x,
+    y: initialPosition.y,
+    width,
+    height,
+  });
+
+  app.stage.addChild(asteroid);
+
+  const object = {
+    body: asteroidBody,
+    sprite: asteroid,
+  };
+
+  sceneObjects.push(object);
+}
+
+function setup() {
+  const id = app.loader.resources['img/spacesurfing.json'].textures;
+
+  createSceneSpaceship({
+    initialPosition: { x: canvasWidth / 2, y: canvasHeight / 2 },
+    width: 70,
+    height: 70,
+    texture: id['spaceship.png'],
+  });
+
+  createSceneAsteroid({
+    initialPosition: { x: 330, y: 130 },
+    width: 100,
+    height: 100,
     texture: id['asteroid1.png'],
-    x: 330,
-    y: 130,
-    width: 100,
-    height: 100,
   });
 
-  app.stage.addChild(asteroid1);
-
-  const asteroid2 = new Asteroid({
+  createSceneAsteroid({
+    initialPosition: { x: 130, y: 130 },
+    width: 100,
+    height: 100,
     texture: id['asteroid2.png'],
-    x: 130,
-    y: 130,
-    width: 100,
-    height: 100,
   });
-
-  app.stage.addChild(asteroid2);
-
-  app.ticker.add((delta) => gameLoop(delta));
 }
 
 function component() {
-  const element = document.querySelector('#game');
-
   app = new PIXI.Application({
     antialias: true,
     transparent: false,
     resolution: 1,
-    // resizeTo: sceneContainer
+    resizeTo: sceneContainer,
   });
 
   app.renderer.view.style.position = 'absolute';
   app.renderer.view.style.display = 'block';
   app.renderer.autoResize = true;
-  app.renderer.resize(element.offsetWidth, element.offsetHeight);
 
   app.loader
     .add('img/spacesurfing.json')
     .load(setup);
 
-  element.appendChild(app.view);
+  app.ticker.add((delta) => gameLoop(delta));
 
-  return element;
+  sceneContainer.appendChild(app.view);
+
+  Engine.run(engine);
 }
 
-document.body.appendChild(component());
+component();

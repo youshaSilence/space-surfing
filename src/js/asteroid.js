@@ -13,4 +13,9 @@ export default class Asteroid extends PIXI.Sprite {
     this.anchor.set(0.5, 0.5);
     this.position.set(x, y);
   }
+
+  update(delta, { bodyPosition, bodyAngle }) {
+    this.position = bodyPosition;
+    this.rotation = bodyAngle;
+  }
 }
