@@ -1,7 +1,6 @@
 import * as PIXI from 'pixi.js';
 import * as Matter from 'matter-js';
 import keyboard from './keyboard';
-import { getXPos, getYPos } from './utils';
 
 const { Bodies, Body } = Matter;
 
@@ -17,9 +16,7 @@ export default class Spaceship extends PIXI.Sprite {
     this.anchor.set(0.5, 0.5);
     this.position.set(x, y);
 
-    this.maxSpeed = 5;
-    this.currentSpeed = 0;
-    this.acceleration = 0.07;
+    this.thrust = 0.0004;
 
     this.maxAngularSpeed = 0.05;
     this.currentAngularSpeed = 0;
@@ -30,7 +27,7 @@ export default class Spaceship extends PIXI.Sprite {
     );
 
     // Body.setInertia(this.body, 100);
-    //Body.setMass(this.body, 1000);
+    // Body.setMass(this.body, 1000);
     // this.body.friction = 0.1;
 
     this.setControls();
@@ -72,24 +69,17 @@ export default class Spaceship extends PIXI.Sprite {
 
   update(delta, { bodyPosition, bodyAngle }) {
     if (this.keyboard.up.isDown) {
-      const y = getYPos(this.body.angle, this.body.speed + this.acceleration);
-      const x = getXPos(this.body.angle, this.body.speed + this.acceleration);
-      Body.setVelocity(this.body, { x, y: -y });
-    }
-
-    if (this.keyboard.down.isDown) {
-      const y = getYPos(this.body.angle, this.body.speed - 0.1);
-      const x = getXPos(this.body.angle, this.body.speed - 0.1);
-
-      Body.setVelocity(this.body, { x, y: -y });
+      this.body.force.x -= this.thrust * Math.cos(this.body.angle + Math.PI * 0.5);
+      this.body.force.y -= this.thrust * Math.sin(this.body.angle + Math.PI * 0.5);
+    } else if (this.keyboard.down.isDown) {
+      this.body.force.x += this.thrust * Math.cos(this.body.angle + Math.PI * 0.5);
+      this.body.force.y += this.thrust * Math.sin(this.body.angle + Math.PI * 0.5);
     }
 
     if (this.keyboard.left.isDown) {
       if (this.currentAngularSpeed < this.maxAngularSpeed) {
         this.currentAngularSpeed += this.angularAcceleration;
       }
-
-      // Body.setAngularVelocity(this.body, -this.currentAngularSpeed);
       Body.rotate(this.body, -this.currentAngularSpeed);
     }
 
@@ -98,15 +88,10 @@ export default class Spaceship extends PIXI.Sprite {
         this.currentAngularSpeed += this.angularAcceleration;
       }
 
-      // Body.setAngularVelocity(this.body, this.currentAngularSpeed);
       Body.rotate(this.body, this.currentAngularSpeed);
     }
 
-    // this.body.torque = this.vr;
-
     this.position = bodyPosition;
     this.rotation = bodyAngle;
-    // this.y += this.vy;
-    // this.x += this.vx;
   }
 }
