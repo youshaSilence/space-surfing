@@ -60,5 +60,6 @@ module.exports = {
         concurrency: 100,
       },
     }),
+    new webpack.ProvidePlugin({ 'window.decomp': 'poly-decomp' }),
   ],
 };
