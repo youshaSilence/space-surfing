@@ -26,10 +26,6 @@ export default class Spaceship extends PIXI.Sprite {
       x, y, 3, width / 2, { restitution: 0.8 },
     );
 
-    // Body.setInertia(this.body, 100);
-    // Body.setMass(this.body, 1000);
-    // this.body.friction = 0.1;
-
     this.setControls();
   }
 
